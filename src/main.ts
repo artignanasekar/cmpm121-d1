@@ -1,4 +1,5 @@
 // CMPM 121 • D1 — Cat Crew: Energy Clicker (strict TS, lint-safe)
+//shared with live session
 
 /* ---------------- Types ---------------- */
 type ProducerDef = {
