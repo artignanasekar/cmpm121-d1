@@ -56,7 +56,7 @@ type GameState = {
   const FLAVOR: Record<string, { what: string; punch: string }> = {
     paw: {
       what: "A tiny paw that auto-clicks now and then.",
-      punch: "“Every little boop helps.”",
+      punch: "“Every little boop boop helps.”",
     },
     familiar: {
       what: "A friendly cat that adds steady energy each second.",
@@ -327,7 +327,6 @@ type GameState = {
     }
   }
 
-  /* ---------------- UI ---------------- */
   function buildProducers(): void {
     $list.replaceChildren();
     for (const def of PRODUCERS) {
