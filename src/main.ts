@@ -331,7 +331,7 @@ type GameState = {
     $list.replaceChildren();
     for (const def of PRODUCERS) {
       const owned = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
-      const price = costOf(def.baseCost, owned);
+      const priceofitem = costOf(def.baseCost, owned);
 
       const li = document.createElement("li");
       li.id = `pr_${def.id}`;
@@ -346,7 +346,7 @@ type GameState = {
         </div>
         <button class="buy" data-id="${def.id}" title="Key [${def.key}]"
           style="padding:.4rem .7rem;border:1px solid #ddd;border-radius:.5rem;cursor:pointer">
-          ✨ Hire (${fmt(price)})
+          ✨ Hire (${fmt(priceofitem)})
         </button>
       `;
       $list.appendChild(li);
@@ -381,13 +381,13 @@ type GameState = {
   function refreshButtons(): void {
     for (const def of PRODUCERS) {
       const owned = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
-      const price = costOf(def.baseCost, owned);
+      const priceofitem = costOf(def.baseCost, owned);
       const btn = document.querySelector<HTMLButtonElement>(
         `#pr_${def.id} .buy`,
       );
       if (!btn) continue;
-      btn.disabled = state.cookies < price;
-      btn.textContent = `✨ Hire (${fmt(price)})`;
+      btn.disabled = state.cookies < priceofitem;
+      btn.textContent = `✨ Hire (${fmt(priceofitem)})`;
       const ownedEl = document.querySelector<HTMLSpanElement>(
         `#pr_${def.id} .owned`,
       );
@@ -408,9 +408,9 @@ type GameState = {
   function buyProducer(id: string): void {
     const def = requireDef(id);
     const owned = state.producers.find((p) => p.id === id)?.owned ?? 0;
-    const price = costOf(def.baseCost, owned);
-    if (state.cookies < price) return;
-    state.cookies -= price;
+    const priceofitem = costOf(def.baseCost, owned);
+    if (state.cookies < priceofitem) return;
+    state.cookies -= priceofitem;
     const slot = state.producers.find((p) => p.id === id);
     if (slot) slot.owned++;
     toast(`Hired ${def.name}.`);
@@ -419,9 +419,9 @@ type GameState = {
   }
 
   function buyClickUpgrade(): void {
-    const price = clickUpgradeCost(state.clickUpgrades);
-    if (state.cookies < price) return;
-    state.cookies -= price;
+    const priceofitem = clickUpgradeCost(state.clickUpgrades);
+    if (state.cookies < priceofitem) return;
+    state.cookies -= priceofitem;
     state.clickUpgrades++;
     state.clickPower++;
     toast("Click power +1.");
