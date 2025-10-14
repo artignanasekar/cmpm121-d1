@@ -319,7 +319,6 @@ type GameState = {
   const line = (label: string, value: string) =>
     `<div><strong>${label}:</strong> ${value}</div>`;
 
-  /* ---------------- Save/Load ---------------- */
   const SAVE_KEY = "cmpm121_d1_save";
 
   // Base64 helpers without escape/unescape
@@ -428,7 +427,6 @@ type GameState = {
     $buyUpg.disabled = state.cookies < nextCost;
   }
 
-  /* ---------------- Actions ---------------- */
   function clickCookie(): void {
     state.cookies += state.clickPower;
     state.lifetime += state.clickPower;
@@ -460,7 +458,6 @@ type GameState = {
     refreshButtons();
   }
 
-  /* ---------------- Loop ---------------- */
   let last = now();
   function frame(): void {
     const t = now();
@@ -476,7 +473,6 @@ type GameState = {
     requestAnimationFrame(frame);
   }
 
-  /* ---------------- Events ---------------- */
   $tap.addEventListener("click", clickCookie);
 
   document.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -502,7 +498,6 @@ type GameState = {
 
   $buyUpg.addEventListener("click", buyClickUpgrade);
 
-  // Tooltips (simple language; no emojis on bottom 4)
   const lineSimple = (k: keyof typeof FLAVOR) =>
     `<div>${
       FLAVOR[k].what
@@ -569,7 +564,6 @@ type GameState = {
     }
   });
 
-  /* ---------------- Init ---------------- */
   load();
   buildProducers();
   refreshNumbers();
@@ -577,7 +571,6 @@ type GameState = {
   setInterval(save, 10_000);
   requestAnimationFrame(frame);
 
-  /* ---------------- Toast ---------------- */
   function toast(msg: string): void {
     const n = document.createElement("div");
     n.textContent = msg;
