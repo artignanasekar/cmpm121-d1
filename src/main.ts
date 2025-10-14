@@ -205,7 +205,38 @@ type GameState = {
     <div id="toasts" style="position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:9999"></div>
   `;
 
-  // Typed refs
+  /* >>> Added: global button polish (3D shadow + press/hover) <<< */
+  const $style = document.createElement("style");
+  $style.textContent = `
+    #app button {
+      box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 6px 12px rgba(0,0,0,.06);
+      transition: transform .06s ease, box-shadow .06s ease, opacity .2s ease;
+      will-change: transform, box-shadow;
+    }
+    #app button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 0 rgba(0,0,0,.14), 0 10px 16px rgba(0,0,0,.08);
+    }
+    #app button:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.06);
+    }
+    #app button:disabled {
+      opacity: .6;
+      box-shadow: none;
+      transform: none;
+      cursor: not-allowed;
+    }
+    /* Nice visible keyboard focus */
+    #app button:focus-visible {
+      outline: 2px solid #6aa9ff;
+      outline-offset: 2px;
+    }
+  `;
+  document.head.appendChild($style);
+  /* <<< End added block <<< */
+
+  // Typed refs - button styles
   const $count = document.querySelector<HTMLSpanElement>("#count")!;
   const $life = document.querySelector<HTMLSpanElement>("#lifetime")!;
   const $cps = document.querySelector<HTMLSpanElement>("#cps")!;
@@ -382,7 +413,7 @@ type GameState = {
     for (const def of PRODUCERS) {
       const owned = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
       const priceofitem = costOf(def.baseCost, owned);
-      const btn = document.querySelector<HTMLButtonElement>(
+      const btn = document.querySelector<HTMLButtonElement>( //button styles format
         `#pr_${def.id} .buy`,
       );
       if (!btn) continue;
