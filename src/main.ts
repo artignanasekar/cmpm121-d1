@@ -27,7 +27,13 @@ type GameState = {
 
   // keep IDs stable; rename the visible names only
   const PRODUCERS: ProducerDef[] = [
-    { id: "paw", name: "🐾 Paw Pointer", baseCost: 15, cps: 0.1, key: "1" },
+    {
+      id: "cursorUpgrade",
+      name: "🐾 Paw Pointer",
+      baseCost: 15,
+      cps: 0.1,
+      key: "1",
+    },
     { id: "familiar", name: "🐈 Helper Cat", baseCost: 100, cps: 1, key: "2" },
     {
       id: "garden",
@@ -54,7 +60,7 @@ type GameState = {
 
   // Plain-English hover text + short punchlines
   const FLAVOR: Record<string, { what: string; punch: string }> = {
-    paw: {
+    cursorUpgrade: {
       what: "A tiny paw that auto-clicks now and then.",
       punch: "“Every little boop boop helps.”",
     },
