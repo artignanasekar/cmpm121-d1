@@ -1,7 +1,7 @@
 // CMPM 121 • D1 — Cat Crew: Energy Clicker (strict TS, lint-safe)
 //shared with live session
 
-/* ---------------- Types ---------------- */
+/* ---------------- TYPES AND INTERFACES ---------------- */
 type ProducerDef = {
   id: string;
   name: string;
@@ -19,7 +19,7 @@ type GameState = {
   producers: OwnedProducer[];
 };
 
-/* ---------------- Config ---------------- */
+/* ---------------- GAME CONFIGURATIONS ---------------- */
 (() => {
   "use strict";
 
@@ -104,7 +104,7 @@ type GameState = {
 
   const CLICK_UPGRADE = { baseCost: 50, factor: 1.3 };
 
-  /* ---------------- State ---------------- */
+  /* ---------------- GAME STATE ---------------- */
   const state: GameState = {
     version: VERSION,
     cookies: 0,
@@ -114,7 +114,7 @@ type GameState = {
     producers: PRODUCERS.map((p) => ({ id: p.id, owned: 0 })),
   };
 
-  /* ---------------- Utils ---------------- */
+  /* ---------------- HELPER FUNCTIONS ---------------- */
   const nf = new Intl.NumberFormat(undefined, {
     notation: "compact",
     maximumFractionDigits: 1,
