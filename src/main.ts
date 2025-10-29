@@ -388,8 +388,8 @@ type GameState = {
       $list.appendChild(li);
 
       // dynamic tooltips
-      const btn = li.querySelector<HTMLButtonElement>("button.buy")!;
-      bindTooltip(btn, () => {
+      const button = li.querySelector<HTMLButtonElement>("button.buy")!;
+      bindTooltip(button, () => {
         const own = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
         const next = costOf(def.baseCost, own);
         const desc = FLAVOR[def.id];
@@ -416,12 +416,12 @@ type GameState = {
     for (const def of PRODUCERS) {
       const owned = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
       const priceofitem = costOf(def.baseCost, owned);
-      const btn = document.querySelector<HTMLButtonElement>(
+      const button = document.querySelector<HTMLButtonElement>(
         `#pr_${def.id} .buy`,
       );
-      if (!btn) continue;
-      btn.disabled = state.cookies < priceofitem;
-      btn.textContent = `✨ Hire (${fmt(priceofitem)})`;
+      if (!button) continue;
+      button.disabled = state.cookies < priceofitem;
+      button.textContent = `✨ Hire (${fmt(priceofitem)})`;
       const ownedEl = document.querySelector<HTMLSpanElement>(
         `#pr_${def.id} .owned`,
       );
@@ -495,9 +495,9 @@ type GameState = {
   $list.addEventListener("click", (e: MouseEvent) => {
     const t = e.target;
     if (!(t instanceof Element)) return;
-    const btn = t.closest("button.buy");
-    if (btn instanceof HTMLButtonElement) {
-      const id = btn.getAttribute("data-id");
+    const button = t.closest("button.buy");
+    if (button instanceof HTMLButtonElement) {
+      const id = button.getAttribute("data-id");
       if (id) buyProducer(id);
     }
   });
