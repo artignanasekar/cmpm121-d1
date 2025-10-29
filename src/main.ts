@@ -142,6 +142,27 @@ type GameState = {
     state.producers.forEach((p) => (p.owned = Math.max(0, p.owned | 0)));
   }
 
+  /* ---------------- PERSISTENCE (moved above DOM) ---------------- */
+  const SAVE_KEY = "cmpm121_d1_save";
+
+  function save(): void {
+    try {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+      toast("Saved.");
+    } catch (_err) {
+      /* ignore: localStorage may be unavailable (private mode, quota, etc.) */
+    }
+  }
+  function load(): void {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) Object.assign(state, JSON.parse(raw) as GameState);
+      clamp();
+    } catch (_err) {
+      /* ignore: corrupted or unavailable save */
+    }
+  }
+
   /* ---------------- DOM scaffold ---------------- */
   let appMaybe = document.querySelector<HTMLDivElement>("#app");
   if (!appMaybe) {
@@ -325,9 +346,7 @@ type GameState = {
   const line = (label: string, value: string) =>
     `<div><strong>${label}:</strong> ${value}</div>`;
 
-  const SAVE_KEY = "cmpm121_d1_save";
-
-  // Base64 helpers without escape/unescape
+  /* ---------------- Base64 helpers (used by export/import) ---------------- */
   const enc = new TextEncoder();
   const dec = new TextDecoder();
   function encodeSave(obj: unknown): string {
@@ -345,24 +364,7 @@ type GameState = {
     return JSON.parse(json) as T;
   }
 
-  function save(): void {
-    try {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-      toast("Saved.");
-    } catch (_err) {
-      /* ignore: localStorage may be unavailable (private mode, quota, etc.) */
-    }
-  }
-  function load(): void {
-    try {
-      const raw = localStorage.getItem(SAVE_KEY);
-      if (raw) Object.assign(state, JSON.parse(raw) as GameState);
-      clamp();
-    } catch (_err) {
-      /* ignore: corrupted or unavailable save */
-    }
-  }
-
+  /* ---------------- UI BUILDERS & REFRESHERS (after DOM) ---------------- */
   function buildProducers(): void {
     $list.replaceChildren();
     for (const def of PRODUCERS) {
@@ -376,9 +378,7 @@ type GameState = {
       li.innerHTML = `
         <div>
           <strong>${def.name}</strong><br>
-          <small>${
-        fmt(def.cps)
-      } EPS each • Owned: <strong class="owned">${owned}</strong></small>
+          <small>${fmt(def.cps)} EPS each • Owned: <strong class="owned">${owned}</strong></small>
         </div>
         <button class="buy" data-id="${def.id}" title="Key [${def.key}]"
           style="padding:.4rem .7rem;border:1px solid #ddd;border-radius:.5rem;cursor:pointer">
@@ -409,16 +409,14 @@ type GameState = {
     $life.textContent = fmt(state.lifetime); // Total Energy
     $cps.textContent = fmt(eps()); // EPS
     $upgInfo.textContent =
-      `Current per click: +${state.clickPower} • Next cost: ${
-        fmt(clickUpgradeCost(state.clickUpgrades))
-      }`;
+      `Current per click: +${state.clickPower} • Next cost: ${fmt(clickUpgradeCost(state.clickUpgrades))}`;
   }
 
   function refreshButtons(): void {
     for (const def of PRODUCERS) {
       const owned = state.producers.find((p) => p.id === def.id)?.owned ?? 0;
       const priceofitem = costOf(def.baseCost, owned);
-      const btn = document.querySelector<HTMLButtonElement>( //button styles format
+      const btn = document.querySelector<HTMLButtonElement>(
         `#pr_${def.id} .buy`,
       );
       if (!btn) continue;
@@ -433,6 +431,7 @@ type GameState = {
     $buyUpg.disabled = state.cookies < nextCost;
   }
 
+  /* ---------------- GAME ACTIONS ---------------- */
   function clickCookie(): void {
     state.cookies += state.clickPower;
     state.lifetime += state.clickPower;
@@ -479,6 +478,7 @@ type GameState = {
     requestAnimationFrame(frame);
   }
 
+  /* ---------------- EVENTS ---------------- */
   $tap.addEventListener("click", clickCookie);
 
   document.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -505,26 +505,21 @@ type GameState = {
   $buyUpg.addEventListener("click", buyClickUpgrade);
 
   const lineSimple = (k: keyof typeof FLAVOR) =>
-    `<div>${
-      FLAVOR[k].what
-    }</div><div style="opacity:.85;margin-top:.35rem"><em>${
-      FLAVOR[k].punch
-    }</em></div>`;
+    `<div>${FLAVOR[k].what}</div><div style="opacity:.85;margin-top:.35rem"><em>${FLAVOR[k].punch}</em></div>`;
 
   bindTooltip(
     $buyUpg,
     () =>
-      `<div>${FLAVOR.upgrade.what}</div>${
-        line("Current", `+${state.clickPower} per click`)
-      }${
-        line("Next Cost", fmt(clickUpgradeCost(state.clickUpgrades)))
-      }<div style="opacity:.85;margin-top:.35rem"><em>${FLAVOR.upgrade.punch}</em></div>`,
+      `<div>${FLAVOR.upgrade.what}</div>${line("Current", `+${state.clickPower} per click`)}${line("Next Cost", fmt(clickUpgradeCost(state.clickUpgrades)))}<div style="opacity:.85;margin-top:.35rem"><em>${FLAVOR.upgrade.punch}</em></div>`,
   );
+
+  // Bind tooltips for save/reset/export/import
   bindTooltip($save, () => lineSimple("save"));
   bindTooltip($reset, () => lineSimple("reset"));
   bindTooltip($export, () => lineSimple("export"));
   bindTooltip($import, () => lineSimple("import"));
 
+  // Bind actions for save/reset/export/import
   $save.addEventListener("click", save);
   $reset.addEventListener("click", () => {
     if (!confirm("Reset your progress?")) return;
@@ -543,6 +538,7 @@ type GameState = {
     save();
   });
 
+  /* ---------------- EXPORT / IMPORT ---------------- */
   $export.addEventListener("click", () => {
     try {
       const str = encodeSave(state);
@@ -570,6 +566,7 @@ type GameState = {
     }
   });
 
+  /* ---------------- INIT ---------------- */
   load();
   buildProducers();
   refreshNumbers();
