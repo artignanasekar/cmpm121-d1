@@ -16,3 +16,7 @@ Re-skinned late to the “cat crew” theme without changing core structure, so 
 npm install
 npm run dev
 ```
+## Inspiration for second iteration D1.d
+1. Carrot Coins (KupoDupo) I loved how their central “carrot” hero image sat on top of a playful clover background, giving instant theme clarity and charm.
+
+2. Cat Clicker UI (Selcomd) I liked how their UI felt responsive thanks to subtle button depth/press states and helpful inline explanations; it made actions feel more confident and guided.

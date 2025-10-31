@@ -1,5 +1,163 @@
+/* Global look & feel — no inline styles needed in JS */
+
+/* Background image is applied from JS for bundler-safe URL.
+   We keep a soft fallback color here. */
+:root {
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: #cfe8bf;
+  --radius: 18px;
+  --pad: 1rem;
+  --shadow-1: 0 2px 0 rgba(0,0,0,.12), 0 6px 12px rgba(0,0,0,.06);
+  --shadow-2: 0 3px 0 rgba(0,0,0,.14), 0 10px 16px rgba(0,0,0,.08);
+  --shadow-3: 0 1px 0 rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.06);
+}
+
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background-color: #dff3d3; /* fallback while image loads */
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #111;
+}
+
+/* App container */
+#app {
+  max-width: 880px;
+  margin: 2rem auto;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  backdrop-filter: blur(2px);
+}
+
+/* Header */
+header h1 {
+  margin: 0 0 .25rem 0;
+  font-size: 2.2rem;
+  line-height: 1.1;
+}
+header .version {
+  margin: .25rem 0 .25rem 0;
+  color: #555;
+}
+header .tagline {
+  margin: 0 0 .5rem 0;
+  color: #555;
+}
+
+/* Cookie hero */
 .icon {
-  width: 64px;
-  vertical-align: top;
-  border: 1px solid salmon;
+  width: 160px;
+  height: auto;
+  display: block;
+  margin: .5rem auto .75rem;
+  border: 0;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
+  transition: transform .12s ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .icon:hover { transform: scale(1.03) rotate(-2deg); }
+}
+
+/* Stats row */
+.stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.card {
+  border: 1px solid #eee;
+  border-radius: .75rem;
+  padding: 1rem;
+  min-width: 260px;
+  background: #fff;
+}
+.card.actions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  align-items: flex-start;
+}
+.sp { height: .5rem; }
+
+/* Section titles */
+h2 {
+  margin: 1.25rem 0 .5rem 0;
+}
+
+/* Producer list */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: center;
+  padding: .5rem;
+  border: 1px solid #eee;
+  border-radius: .5rem;
+  margin: .25rem 0;
+}
+
+/* Buttons */
+button {
+  padding: .5rem .8rem;
+  border: 1px solid #ddd;
+  border-radius: .6rem;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: transform .06s ease, box-shadow .06s ease, opacity .2s ease;
+  will-change: transform, box-shadow;
+}
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+button:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-3);
+}
+button:disabled {
+  opacity: .6;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+button:focus-visible {
+  outline: 2px solid #6aa9ff;
+  outline-offset: 2px;
+}
+
+/* Upgrade bar + save bar */
+.upg, .savebar {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Toasts */
+.toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  z-index: 9999;
+}
+.toast {
+  background: #111;
+  color: #fff;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  opacity: .95;
 }

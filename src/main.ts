@@ -1,5 +1,15 @@
+// Vite base-path safe asset URLs
+// (adjust paths if your files actually live elsewhere)
+
+/// <reference types="vite/client" />
+import cookieUrl from "./assets/funny-cookie.jpg?url";
+
 // CMPM 121 • D1 — Cat Crew: Energy Clicker (strict TS, lint-safe)
-//shared with live session
+// shared with live session
+
+const ASSET_COOKIE: string = cookieUrl;
+
+
 
 /* ---------------- TYPES AND INTERFACES ---------------- */
 type ProducerDef = {
@@ -181,10 +191,13 @@ type GameState = {
     <header>
       <h1 style="margin:0 0 .25rem 0;">Cat Crew: Energy Clicker</h1>
       <p style="margin:.25rem 0 .25rem 0;color:#555">Version ${VERSION}</p>
-      <p style="margin:0 0 1rem 0;color:#555">
+      <p style="margin:0 0 .5rem 0;color:#555">
         <em>You lead a team of helpful cats. Click to gather <strong>energy</strong>, hire cats to help,
         and build a steady energy machine.</em>
       </p>
+
+      <!-- cookie hero image -->
+      <img id="heroCookie" class="icon" src="${ASSET_COOKIE}" alt="Cookie icon" />
     </header>
 
     <section id="stats" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
@@ -232,9 +245,41 @@ type GameState = {
     <div id="toasts" style="position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:9999"></div>
   `;
 
-  /* >>> Added: global button polish (3D shadow + press/hover) <<< */
+  /* >>> Global styles: buttons + NEW background + cookie icon <<< */
   const $style = document.createElement("style");
   $style.textContent = `
+    /* Leafy background via Vite-rewritten URL */
+    html, body { height: 100%; }
+    body {
+      background: url("${ASSET_BG}") center / cover fixed no-repeat;
+      background-color: #dff3d3; /* fallback while image loads */
+    }
+
+    /* Slight translucency so background peeks through the app card */
+    #app {
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid #cfe8bf;
+      border-radius: 18px;
+      padding: 1rem;
+      backdrop-filter: blur(2px);
+    }
+
+    /* Cookie hero image */
+    .icon {
+      width: 160px;
+      height: auto;
+      display: block;
+      margin: 0.5rem auto 0.75rem;
+      border: 0;
+      vertical-align: middle;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,.15));
+      transition: transform .12s ease;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .icon:hover { transform: scale(1.03) rotate(-2deg); }
+    }
+
+    /* Button polish */
     #app button {
       box-shadow: 0 2px 0 rgba(0,0,0,.12), 0 6px 12px rgba(0,0,0,.06);
       transition: transform .06s ease, box-shadow .06s ease, opacity .2s ease;
@@ -254,7 +299,6 @@ type GameState = {
       transform: none;
       cursor: not-allowed;
     }
-    /* Nice visible keyboard focus */
     #app button:focus-visible {
       outline: 2px solid #6aa9ff;
       outline-offset: 2px;
@@ -303,8 +347,8 @@ type GameState = {
   function positionTip(el: HTMLElement): void {
     const r = el.getBoundingClientRect();
     const margin = 8;
-    const viewportW = globalThis.innerWidth; // Deno lint: use globalThis, not window
-    const viewportH = globalThis.innerHeight; // Deno lint: use globalThis, not window
+    const viewportW = globalThis.innerWidth;
+    const viewportH = globalThis.innerHeight;
     const x = Math.min(
       viewportW - $tip.offsetWidth - margin,
       Math.max(margin, r.left + r.width / 2 - $tip.offsetWidth / 2),
@@ -328,7 +372,6 @@ type GameState = {
     $tip.style.opacity = "0";
     $tip.style.transform = "translateY(4px)";
   }
-  // Deno lint: prefer globalThis or no prefix over window.*
   globalThis.addEventListener("resize", () => {
     if (tipActiveEl) positionTip(tipActiveEl);
   });
